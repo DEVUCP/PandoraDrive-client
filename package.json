@@ -22,7 +22,6 @@
   "scripts": {
     "electron:build": "npm run build && npm run electron:compile && electron-builder",
     "electron:compile": "tsc -p tsconfig.electron.json"
-}
   },
   "eslintConfig": {
     "extends": [
@@ -50,24 +49,24 @@
     "wait-on": "^8.0.3"
   },
   "build": {
-  "appId": "com.yourcompany.pandora-client",
-  "productName": "Pandora Client",
-  "files": [
-    "build/**/*",
-    "dist/**/*",
-    "node_modules/**/*"
-  ],
-  "directories": {
-    "buildResources": "assets",
-    "output": "release"
-  },
-  "extraResources": [
-    {
-      "from": "assets",
-      "to": "assets"
-    }
-  ],
-  "asar": false,
-  "extends": null
-}
+    "appId": "com.yourcompany.pandora-client",
+    "productName": "Pandora Client",
+    "files": [
+      "build/**/*",
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
+    "asar": false,
+    "extends": null
+  }
 }
