@@ -55,24 +55,24 @@
     "wait-on": "^8.0.3"
   },
   "build": {
-    "appId": "com.yourcompany.pandora-client",
-    "productName": "Pandora Client",
-    "files": [
-      "build/**/*",
-      "electron/**/*",
-      "dist/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "linux": {
-      "target": "AppImage"
+  "appId": "com.yourcompany.pandora-client",
+  "productName": "Pandora Client",
+  "files": [
+    "build/**/*",
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
+  "directories": {
+    "buildResources": "assets",
+    "output": "release"
+  },
+  "extraResources": [
+    {
+      "from": "assets",
+      "to": "assets"
     }
-  }
+  ],
+  "asar": false,
+  "extends": null
+}
 }
