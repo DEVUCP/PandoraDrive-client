@@ -39,7 +39,9 @@ jobs:
       run: npm run electron:compile
 
     - name: Build Electron app
-      run: npm run electron:build
+      run: |
+        npm run electron:build
+        ls -la release/
       env:
         CI: true
 

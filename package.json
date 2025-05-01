@@ -57,22 +57,10 @@
   "build": {
     "appId": "com.yourcompany.pandora-client",
     "productName": "Pandora Client",
-    "files": [
-      "build/**/*",
-      "dist/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets",
-      "output": "release"
+    "linux": {
+      "target": ["AppImage"],
+      "publish": false
     },
-    "extraResources": [
-      {
-        "from": "assets",
-        "to": "assets"
-      }
-    ],
-    "asar": false,
-    "extends": null
+    "publish": null
   }
 }
