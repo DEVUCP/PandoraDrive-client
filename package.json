@@ -2,6 +2,8 @@
   "name": "pandora-client",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/main.js",
+  "homepage": "./",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -21,7 +23,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron:serve": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && npm run electron:compile && electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:compile": "tsc -p tsconfig.electron.json",
+    "electron:start": "npm run electron:compile && electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -40,5 +46,33 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^36.0.1",
+    "electron-builder": "^26.0.12",
+    "wait-on": "^8.0.3"
+  },
+  "build": {
+    "appId": "com.yourcompany.pandora-client",
+    "productName": "Pandora Client",
+    "files": [
+      "build/**/*",
+      "electron/**/*",
+      "dist/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }
