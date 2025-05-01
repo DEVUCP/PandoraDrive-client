@@ -20,8 +20,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron:serve": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && npm run electron:compile && electron .\"",
     "electron:build": "npm run build && npm run electron:compile && electron-builder",
-    "electron:compile": "tsc -p tsconfig.electron.json"
+    "electron:compile": "tsc -p tsconfig.electron.json",
+    "electron:start": "npm run electron:compile && electron ."
   },
   "eslintConfig": {
     "extends": [
