@@ -25,7 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && npm run electron:compile && electron .\"",
-    "electron:build": "npm run build && electron-builder",
+    "electron:build": "npm run build && npm run electron:compile && electron-builder",
     "electron:compile": "tsc -p tsconfig.electron.json",
     "electron:start": "npm run electron:compile && electron ."
   },
@@ -57,22 +57,10 @@
   "build": {
     "appId": "com.yourcompany.pandora-client",
     "productName": "Pandora Client",
-    "files": [
-      "build/**/*",
-      "electron/**/*",
-      "dist/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg"
-    },
     "linux": {
-      "target": "AppImage"
-    }
+      "target": ["AppImage"],
+      "publish": false
+    },
+    "publish": null
   }
 }
