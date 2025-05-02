@@ -1,58 +1,44 @@
-name: Electron Build
+name: Build and Test
 
 on:
   push:
-    branches: [ "main" , "CI"]
+    branches: [ main, CI]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [20.x]
-        include:
-          - os: ubuntu-latest
-            artifact-name: linux
-          - os: macos-latest
-            artifact-name: mac
-          - os: windows-latest
-            artifact-name: win
+  build-and-test:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '18.x'
+        cache: 'npm'
 
     - name: Install dependencies
       run: npm ci
 
+    - name: Run tests
+      run: npm test -- --watchAll=false
+
     - name: Build React app
       run: npm run build
 
-    - name: Compile Electron
-      run: npm run electron:compile
-
     - name: Build Electron app
-      run: |
-        npm run electron:build
-        ls -la release/
+      run: npm run electron:build
       env:
         CI: true
 
-    - name: Upload artifacts
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: pandora-client-${{ matrix.artifact-name }}-${{ github.sha }}
+        name: electron-build
         path: |
-          dist/*.AppImage
-          dist/*.dmg
-          dist/*.exe
-          dist/*.zip
-          dist/*.blockmap
-          dist/*.yml
+          dist/
+          build/
+        if-no-files-found: error
