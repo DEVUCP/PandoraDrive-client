@@ -5,6 +5,10 @@
   "main": "dist/main.js",
   "homepage": "./",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.2",
+    "@mui/material": "^7.0.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -58,7 +62,9 @@
     "appId": "com.yourcompany.pandora-client",
     "productName": "Pandora Client",
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "publish": false
     },
     "publish": null
