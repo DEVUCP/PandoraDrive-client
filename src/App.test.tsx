@@ -4,6 +4,6 @@ import App from './App';
 
 test('renders learn react link', () => {
   render(<App />);
-  const registerScreen = screen.getByRole('main');
+  const registerScreen = screen.getByTestId('register-screen');
   expect(registerScreen).toBeInTheDocument();
 });

@@ -28,7 +28,9 @@ import { createContext, useState } from 'react';
       {/* <h1>{ip}{port}</h1> for debugging*/}
       <ipContext.Provider value={{ip, setIp}}>
       <portContext.Provider value={{port, setPort}}>
-        <RegisterScreen />
+        <div data-testid="register-screen">
+            <RegisterScreen />
+        </div>
       </portContext.Provider>
       </ipContext.Provider>
       </>
