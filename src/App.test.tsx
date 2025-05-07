@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import RegisterScreen from './Pages/RegisterScreen';
+import App from './App';
 
 test('renders learn react link', () => {
-  render(<RegisterScreen />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  render(<App />);
+  const registerScreen = screen.getByRole('main');
+  expect(registerScreen).toBeInTheDocument();
 });
