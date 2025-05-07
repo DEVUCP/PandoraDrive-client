@@ -1,7 +1,7 @@
 
 import React, { useContext, useState } from 'react';
 import { TextField, Button, Box, Typography, Alert, CircularProgress} from '@mui/material';
-import { Check } from '@mui/icons-material';
+
 import { discoverBackendServer } from '../Utils/ServerFinder';
 
 import { portContext, ipContext } from '../App';
@@ -9,7 +9,7 @@ import { portContext, ipContext } from '../App';
 const FindServiceScreen: React.FC = () => {
 
     const {port, setPort} = useContext(portContext);
-    const {ip, setIp} = useContext(ipContext);
+    const {setIp} = useContext(ipContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [alert, setAlert] = useState<boolean>(false);
