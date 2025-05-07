@@ -4,7 +4,7 @@ import { TextField, Button, Box, Typography, Alert, CircularProgress} from '@mui
 import { Check } from '@mui/icons-material';
 import { discoverBackendServer } from '../Utils/ServerFinder';
 
-import { portContext, ipContext } from '../index';
+import { portContext, ipContext } from '../App';
 
 const FindServiceScreen: React.FC = () => {
 
