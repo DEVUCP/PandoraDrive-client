@@ -1,4 +1,4 @@
-import { createHttpClient } from "../Clients/HTTPClient";
+import { createHTTPClient } from "../Clients/HTTPClient";
 
 type MimeType = `${string}/${string}`;
 type Token = string;
@@ -17,13 +17,13 @@ const FileService = (
   handle_error: (err: Error) => void,
   token: Token,
 ) => {
-  const client = createHttpClient();
+  const client = createHTTPClient();
 
   return {
     get_root_folder: () => {
       client
         .get(`${backend_url}/api/v1/folder?user_id=1`)
-        .catch((err) => handle_error(err));
+        .catch((err: Error) => handle_error(err));
     },
     create_file: (data: {
       file_name: string;
@@ -44,7 +44,7 @@ const FileService = (
             token,
           },
         )
-        .catch((err) => handle_error(err));
+        .catch((err: Error) => handle_error(err));
     },
   };
 };

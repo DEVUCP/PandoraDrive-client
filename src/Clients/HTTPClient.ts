@@ -18,7 +18,7 @@ interface HttpClient {
   delete: <T>(url: string, headers?: RequestHeaders, body?: any) => Promise<T>;
 }
 
-const createHttpClient = (
+export const createHTTPClient = (
   requestInterceptors: Interceptor<RequestConfig>[] = [],
   responseInterceptors: Interceptor<unknown>[] = [],
 ): HttpClient => {
