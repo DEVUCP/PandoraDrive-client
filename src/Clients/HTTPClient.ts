@@ -18,7 +18,7 @@ interface HttpClient {
   delete: <T>(url: string, headers?: RequestHeaders, body?: any) => Promise<T>;
 }
 
-export const createHttpClient = (
+const createHttpClient = (
   requestInterceptors: Interceptor<RequestConfig>[] = [],
   responseInterceptors: Interceptor<unknown>[] = [],
 ): HttpClient => {
@@ -58,10 +58,7 @@ export const createHttpClient = (
       }
     }
     try {
-      const response = await fetch(
-        `${baseURL}${finalConfig.url}`,
-        requestOptions,
-      );
+      const response = await fetch(finalConfig.url, requestOptions);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
