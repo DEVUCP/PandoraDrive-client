@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import RegisterScreen from './Pages/RegisterScreen';
-import reportWebVitals from './reportWebVitals';
 import App from './App';
 
-import { useState, createContext } from 'react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
