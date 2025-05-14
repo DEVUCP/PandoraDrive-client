@@ -11,10 +11,22 @@ export interface FileMetadata {
   modified_at: Date;
   status: Status;
 }
+export type FileMetadataBody = Omit<
+  FileMetadata,
+  "created_at" | "modified_at"
+> & {
+  created_at: string;
+  modified_at: string;
+};
 
 export interface FolderMetadata {
   folder_id: FolderId;
-  parent_folder_id: FolderId;
+  parent_folder_id?: FolderId;
+  folder_name: string;
   created_at: Date;
   status: Status;
 }
+
+export type FolderMetadataBody = Omit<FolderMetadata, "created_at"> & {
+  created_at: string;
+};
