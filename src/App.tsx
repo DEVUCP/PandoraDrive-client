@@ -15,14 +15,10 @@ function App() {
 
   const userdata_service = UserDataService();
   const renderRoutes = () => {
-    if (!ip) return <Route path="*" element={<RegisterScreen />} />;
-    if (!userdata_service.is_authenticated())
-      return <Route path="*" element={<LoginPage />} />;
-    return (
-      <>
-        <Route index element={<DrivePage />} />
-      </>
-    );
+    // if (!ip) return <Route path="*" element={<RegisterScreen />} />;
+    // if (!userdata_service.is_authenticated())
+    //   return <Route path="*" element={<LoginPage />} />;
+    return <Route index element={<DrivePage />} />;
   };
   return (
     <>
