@@ -1,29 +1,35 @@
-import React from 'react';
-import logo from '../logo.svg';
-import styles from '../RegisterScreen.module.css';
-import FindServiceScreen from '../Components/FindServiceScreen';
+import React from "react";
+import logo from "../logo.svg";
+import FindServiceScreen from "../Components/FindServiceScreen";
 
 function RegisterScreen() {
   return (
-    <div className={styles.RegisterScreen}>
-      <div className={styles.Appheader}>
-        <div className={styles.Clientwindow}>
-          <h2>Welcome to Pandora Home Drive!</h2>
-          <div className={styles.Portform}style={{width: 'fit-content'}}><FindServiceScreen/></div>
+    <div className="w-screen h-screen bg-[#282c34] text-center">
+      <div className="flex flex-col h-full text-[calc(10px+2vmin)] text-white">
+        <div className="flex flex-col items-center bg-[#282c34] flex-1 min-h-0 p-4">
+          <h2 className="mb-4">Welcome to Pandora Home Drive!</h2>
+          <div className="w-fit">
+            <FindServiceScreen />
+          </div>
         </div>
-        <div className={styles.framework}>
-          <img src={logo} className={styles.Applogo} alt="logo" />
-          <p>
-            {"Written with the "} 
+
+        <div className="bg-[#40444d] p-5 mt-auto">
+          <img
+            src={logo}
+            className="h-[5vmin] pointer-events-none animate-[spin_20s_linear_infinite] mx-auto"
+            alt="logo"
+          />
+          <p className="mt-4">
+            Written with the{" "}
             <a
-              className={styles.Applink}
+              className="text-[#61dafb] underline"
               href="https://reactjs.org"
               target="_blank"
               rel="noopener noreferrer"
             >
               React
-            </a>
-            {" framework"}
+            </a>{" "}
+            framework
           </p>
         </div>
       </div>
