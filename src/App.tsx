@@ -15,9 +15,9 @@ function App() {
 
   const userdata_service = UserDataService();
   const renderRoutes = () => {
-    // if (!ip) return <Route path="*" element={<RegisterScreen />} />;
-    // if (!userdata_service.is_authenticated())
-    //   return <Route path="*" element={<LoginPage />} />;
+    if (!ip) return <Route path="*" element={<RegisterScreen />} />;
+    if (!userdata_service.is_authenticated())
+      return <Route path="*" element={<LoginPage />} />;
     return <Route index element={<DrivePage />} />;
   };
   return (
@@ -27,9 +27,7 @@ function App() {
         <portContext.Provider value={{ port, setPort }}>
           <FSProvider>
             <BrowserRouter>
-              <div className="max-w-screen-xl mx-auto p-8 text-center">
-                <Routes>{renderRoutes()}</Routes>
-              </div>
+              <Routes>{renderRoutes()}</Routes>
             </BrowserRouter>
           </FSProvider>
         </portContext.Provider>
