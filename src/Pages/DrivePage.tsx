@@ -4,7 +4,7 @@ import FileTable from "../Components/FileTable";
 
 const DrivePage: React.FC = () => {
   return (
-    <div className="flex-1 p-4 bg-[#282c34] ">
+    <div className="flex-1 p-4">
       <FolderSection />
       <FileTable />
     </div>
