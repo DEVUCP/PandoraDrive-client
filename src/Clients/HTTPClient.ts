@@ -46,13 +46,16 @@ export const createHTTPClient = (
     const requestOptions: RequestInit = {
       method: finalConfig.method || "GET",
       headers,
+      credentials: "include",
     };
 
     // Handle body
     if (finalConfig.body) {
-      if (finalConfig.body instanceof FormData) {
+      if (
+        finalConfig.body instanceof FormData ||
+        finalConfig.body instanceof URLSearchParams
+      ) {
         requestOptions.body = finalConfig.body;
-        delete headers["Content-Type"];
       } else {
         requestOptions.body = JSON.stringify(finalConfig.body);
       }
@@ -61,6 +64,7 @@ export const createHTTPClient = (
       const response = await fetch(finalConfig.url, requestOptions);
 
       if (!response.ok) {
+        console.log(await response.text());
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 

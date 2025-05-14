@@ -31,9 +31,12 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
   const file_service = useRef<IFileService | null>(null);
 
   useEffect(() => {
-    file_service.current = FileService(`${ip}:${port}`, (err: Error) => {
-      console.error("FileService error:", err);
-    });
+    file_service.current = FileService(
+      `http://localhost:${port}`,
+      (err: Error) => {
+        console.error("FileService error:", err);
+      },
+    );
 
     return () => {
       file_service.current = null;

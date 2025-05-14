@@ -20,9 +20,7 @@ function App() {
       return <Route path="*" element={<LoginPage />} />;
     return (
       <>
-        <FSProvider>
-          <Route index element={<DrivePage />} />
-        </FSProvider>
+        <Route index element={<DrivePage />} />
       </>
     );
   };
@@ -31,9 +29,11 @@ function App() {
       {/* <h1>{ip}{port}</h1> for debugging*/}
       <ipContext.Provider value={{ ip, setIp }}>
         <portContext.Provider value={{ port, setPort }}>
-          <BrowserRouter>
-            <Routes>{renderRoutes()}</Routes>
-          </BrowserRouter>
+          <FSProvider>
+            <BrowserRouter>
+              <Routes>{renderRoutes()}</Routes>
+            </BrowserRouter>
+          </FSProvider>
         </portContext.Provider>
       </ipContext.Provider>
     </>

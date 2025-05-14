@@ -1,23 +1,30 @@
 import { createHTTPClient } from "../Clients/HTTPClient";
-import Cookies from "js-cookie";
 
 export interface UserService {
-  login: (data: { username: string; password: string }) => void;
+  login: (data: { username: string; password: string }) => Promise<void>;
 }
 
 const UserLoginService = (
-  backend_url: URL,
+  backend_url: string,
   handle_error: (err: Error) => void,
 ) => {
-  const gateway_client = createHTTPClient();
+  const gateway_client = createHTTPClient([
+    (data) => {
+      console.log(data);
+      return data;
+    },
+  ]);
 
-  const login = (data: {
+  const login = ({
+    username,
+    password,
+  }: {
     username: string;
     password: string;
   }): Promise<void> => {
-    const formData = new FormData();
-    formData.append("username", data.username);
-    formData.append("password", data.password);
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
 
     return gateway_client
       .post(
@@ -28,7 +35,9 @@ const UserLoginService = (
         formData,
       )
       .then((_) => console.log("hello"))
-      .catch((err: Error) => handle_error(err));
+      .catch((err: Error) => {
+        handle_error(err);
+      });
   };
   return { login };
 };
