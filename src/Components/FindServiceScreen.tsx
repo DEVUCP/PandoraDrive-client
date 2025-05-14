@@ -8,16 +8,16 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { discoverBackendServer } from "../Utils/ServerFinder";
-
-import { ipContext } from "../Contexts/ipContext";
-import { portContext } from "../Contexts/portContext";
+import { ServiceLocatorContext } from "../Contexts/ServiceLocatorContext";
+import { useNavigate } from "react-router-dom";
 
 const FindServiceScreen: React.FC = () => {
-  const { port, setPort } = useContext(portContext);
-  const { ip, setIp } = useContext(ipContext);
+  const { ip, setIp, port, setPort } = useContext(ServiceLocatorContext);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +30,7 @@ const FindServiceScreen: React.FC = () => {
           console.log(`Found server at: ${ip}`);
           setIp(ip);
           setError(null);
+          navigate("/drive");
         } else {
           setError("Error connecting to drive!");
         }

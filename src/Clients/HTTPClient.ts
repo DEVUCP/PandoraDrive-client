@@ -1,3 +1,5 @@
+import Status from "../Enums/Status";
+
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";
 export type RequestHeaders = Record<string, string>;
 
@@ -6,6 +8,11 @@ export interface RequestConfig {
   method?: RequestMethod;
   headers?: RequestHeaders;
   body?: any;
+}
+
+export interface RequestError extends Error {
+  response?: Response;
+  request?: RequestInit;
 }
 
 export type Interceptor<T> = (data: T) => Promise<T> | T;
@@ -64,8 +71,12 @@ export const createHTTPClient = (
       const response = await fetch(finalConfig.url, requestOptions);
 
       if (!response.ok) {
-        console.log(await response.text());
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const error: RequestError = new Error(
+          `HTTP error! Status: ${response.status}`,
+        );
+        error.response = response;
+        error.request = requestOptions;
+        throw error;
       }
 
       const contentType = response.headers.get("content-type");
@@ -73,24 +84,28 @@ export const createHTTPClient = (
 
       if (contentType?.includes("application/json")) {
         responseData = await response.json();
-      } else if (response.status === 204) {
+      } else if (response.status === Status.NO_CONTENT) {
         responseData = {} as T;
       } else {
         responseData = await response.text();
       }
 
-      return (await applyInterceptors(responseInterceptors, responseData)) as T;
+      return applyInterceptors(
+        responseInterceptors,
+        responseData,
+      ) as Promise<T>;
     } catch (error) {
-      console.error("Request Error", error);
-      throw error;
+      const requestError: RequestError =
+        error instanceof Error ? error : new Error("Unknown error");
+      return applyInterceptors(
+        responseInterceptors,
+        requestError,
+      ) as Promise<T>;
     }
   };
 
-  const get = <T>(
-    url: string,
-    headers?: RequestHeaders,
-    body?: any,
-  ): Promise<T> => request<T>({ url, method: "GET", headers });
+  const get = <T>(url: string, headers?: RequestHeaders): Promise<T> =>
+    request<T>({ url, method: "GET", headers });
 
   const post = <T>(
     url: string,

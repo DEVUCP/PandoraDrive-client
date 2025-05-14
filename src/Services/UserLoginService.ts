@@ -6,6 +6,7 @@ export interface UserService {
 
 const UserLoginService = (
   backend_url: string,
+  handle_login_success: () => void,
   handle_error: (err: Error) => void,
 ) => {
   const gateway_client = createHTTPClient([
@@ -34,7 +35,7 @@ const UserLoginService = (
         },
         formData,
       )
-      .then((_) => console.log("hello"))
+      .then(handle_login_success)
       .catch((err: Error) => {
         handle_error(err);
       });

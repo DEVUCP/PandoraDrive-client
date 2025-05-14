@@ -1,24 +1,32 @@
 import { useState, useContext, useEffect } from "react";
-import { TextField, Button, Grid, Box, Typography } from "@mui/material";
+import { TextField, Button, Box, Typography } from "@mui/material";
 import UserLoginService from "../Services/UserLoginService";
-import { ipContext } from "../Contexts/ipContext";
-import { portContext } from "../Contexts/portContext";
+import { AuthContext } from "../Contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { ServiceLocatorContext } from "../Contexts/ServiceLocatorContext";
 
 const LoginForm: React.FC = () => {
-  const { ip } = useContext(ipContext);
-  const { port } = useContext(portContext);
+  const { url } = useContext(ServiceLocatorContext);
+  const { setIsAuthenticated, isAuthenticated } = useContext(AuthContext)!;
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const userService = UserLoginService(`http://localhost:${port}`, (err) =>
-    console.log(err.message),
-  );
-  useEffect(() => {
-    console.log(`locahost:${port}`);
-  }, [ip, port]);
 
-  // Handle form submission
+  const navigate = useNavigate();
+
+  const userService = UserLoginService(
+    url,
+    () => setIsAuthenticated(true),
+    (err) => {
+      console.log(err);
+    },
+  );
+
+  useEffect(() => {
+    if (isAuthenticated) navigate("/drive");
+  }, [isAuthenticated]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -27,12 +35,6 @@ const LoginForm: React.FC = () => {
     } else {
       setError("Both fields are required.");
     }
-  };
-
-  // Handle errors
-  const handleError = (err: Error) => {
-    console.error("Error:", err);
-    setError("An error occurred while logging in.");
   };
 
   return (

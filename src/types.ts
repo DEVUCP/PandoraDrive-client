@@ -30,3 +30,7 @@ export interface FolderMetadata {
 export type FolderMetadataBody = Omit<FolderMetadata, "created_at"> & {
   created_at: string;
 };
+
+export interface User {
+  username: string;
+}

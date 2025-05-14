@@ -1,6 +1,6 @@
 import { createHTTPClient } from "../Clients/HTTPClient";
 
-import {
+import type {
   FileId,
   FileMetadata,
   FileMetadataBody as FileMetadataBody,
@@ -10,7 +10,6 @@ import {
 } from "../types";
 
 type MimeType = `${string}/${string}`;
-type Token = string;
 
 export type IFileService = {
   getRootFolder: () => Promise<FolderMetadata | null>;
@@ -22,18 +21,39 @@ export type IFileService = {
   }) => void;
   getFile: (file_id: FileId) => Promise<FileMetadata | null>;
   getFolder: (folder_id: FolderId) => Promise<FolderMetadata | null>;
+  getSubFolders: (folder_id: FolderId) => Promise<FolderMetadata[] | null>;
 };
 
 const FileService = (
   backend_url: string,
   handleError: (err: Error) => void,
 ): IFileService => {
-  const gateway_client = createHTTPClient();
+  const gateway_client = createHTTPClient(
+    [
+      (data) => {
+        return data;
+      },
+    ],
+    [
+      (resp) => {
+        console.log(resp);
+        return resp;
+      },
+    ],
+  );
+
+  const transformCreatedAtField = ({
+    created_at,
+    ...rest
+  }: FolderMetadataBody): FolderMetadata => ({
+    ...rest,
+    created_at: new Date(created_at),
+  });
 
   return {
     getRootFolder: () => {
       return gateway_client
-        .get<FolderMetadataBody>(`${backend_url}/api/v1/folder?user_id=1`)
+        .get<FolderMetadataBody>(`${backend_url}/api/v1/files/folder/root`)
         .then(({ created_at, ...rest }) => ({
           ...rest,
           created_at: new Date(created_at),
@@ -71,10 +91,22 @@ const FileService = (
         .get<FolderMetadataBody>(
           `${backend_url}/api/v1/files/folder?folder_id=${id}`,
         )
-        .then(({ created_at, ...rest }) => ({
-          ...rest,
-          created_at: new Date(created_at),
-        }))
+        .then(transformCreatedAtField)
+        .catch((err) => {
+          handleError(err);
+          return null;
+        });
+    },
+    getSubFolders: (id: FolderId): Promise<FolderMetadata[] | null> => {
+      return gateway_client
+        .get<FolderMetadataBody[]>(
+          `${backend_url}/api/v1/files/folder?parent_folder_id=${id}`,
+        )
+        .then((folders) => {
+          console.log(folders);
+          return folders;
+        })
+        .then((folders) => folders.map(transformCreatedAtField))
         .catch((err) => {
           handleError(err);
           return null;
