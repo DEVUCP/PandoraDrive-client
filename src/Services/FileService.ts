@@ -13,7 +13,7 @@ type MimeType = `${string}/${string}`;
 type Token = string;
 
 export type IFileService = {
-  getRootFolder: () => void;
+  getRootFolder: () => Promise<FolderMetadata | null>;
   createFile: (data: {
     file_name: string;
     folder_id: number;
@@ -32,9 +32,16 @@ const FileService = (
 
   return {
     getRootFolder: () => {
-      gateway_client
-        .get(`${backend_url}/api/v1/folder?user_id=1`)
-        .catch((err: Error) => handleError(err));
+      return gateway_client
+        .get<FolderMetadataBody>(`${backend_url}/api/v1/folder?user_id=1`)
+        .then(({ created_at, ...rest }) => ({
+          ...rest,
+          created_at: new Date(created_at),
+        }))
+        .catch((err: Error) => {
+          handleError(err);
+          return null;
+        });
     },
     createFile: (data: {
       file_name: string;

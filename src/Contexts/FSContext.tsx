@@ -9,9 +9,9 @@ import { portContext } from "./portContext";
  * It will look at cache and then use file service if not found
  */
 interface IFSContext {
-  get_file: (id: FileId) => Promise<FileMetadata>;
-  get_folder: (id: FolderId) => Promise<FolderMetadata>;
-  get_root_folder: () => Promise<FolderMetadata>;
+  getFile: (id: FileId) => Promise<FileMetadata>;
+  getFolder: (id: FolderId) => Promise<FolderMetadata>;
+  getRootFolder: () => Promise<FolderMetadata>;
 }
 
 export const FSContext = createContext<IFSContext | null>(null);
@@ -23,6 +23,7 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
   const [loadedFolders, setLoadedFolders] = useState<
     Map<FolderId, FolderMetadata>
   >(new Map());
+  const [rootFolder, setRootFolder] = useState<FolderMetadata | null>(null);
 
   const { ip } = useContext(ipContext);
   const { port } = useContext(portContext);
@@ -75,9 +76,27 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const get_root_folder = () => get_folder(0);
+  const get_root_folder = () => {
+    if (rootFolder) return Promise.resolve(rootFolder);
+
+    const fs = file_service.current;
+    if (!fs) throw Error("File service not connected");
+
+    // otherwise use file servcie
+    return fs.getRootFolder().then((data) => {
+      if (!data) throw Error("Failed to get folder with folder_id: ${id}");
+      setRootFolder(data);
+      return data;
+    });
+  };
   return (
-    <FSContext.Provider value={{ get_file, get_folder, get_root_folder }}>
+    <FSContext.Provider
+      value={{
+        getFile: get_file,
+        getFolder: get_folder,
+        getRootFolder: get_root_folder,
+      }}
+    >
       {children}
     </FSContext.Provider>
   );
