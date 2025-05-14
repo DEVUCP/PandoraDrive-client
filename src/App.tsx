@@ -31,7 +31,9 @@ function App() {
         <portContext.Provider value={{ port, setPort }}>
           <FSProvider>
             <BrowserRouter>
-              <Routes>{renderRoutes()}</Routes>
+              <div className="max-w-screen-xl mx-auto p-8 text-center">
+                <Routes>{renderRoutes()}</Routes>
+              </div>
             </BrowserRouter>
           </FSProvider>
         </portContext.Provider>
