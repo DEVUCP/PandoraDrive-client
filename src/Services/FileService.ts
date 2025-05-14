@@ -4,35 +4,39 @@ import {
   FileId,
   FileMetadata,
   FileMetadataBody as FileMetadataBody,
+  FolderId,
+  FolderMetadata,
+  FolderMetadataBody,
 } from "../types";
 
 type MimeType = `${string}/${string}`;
 type Token = string;
 
 export type IFileService = {
-  get_root_folder: () => void;
-  create_file: (data: {
+  getRootFolder: () => void;
+  createFile: (data: {
     file_name: string;
     folder_id: number;
     size_bytes: number;
     mime_type: MimeType;
   }) => void;
-  get_file: (file_id: FileId) => Promise<FileMetadata | null>;
+  getFile: (file_id: FileId) => Promise<FileMetadata | null>;
+  getFolder: (folder_id: FolderId) => Promise<FolderMetadata | null>;
 };
 
 const FileService = (
   backend_url: string,
-  handle_error: (err: Error) => void,
+  handleError: (err: Error) => void,
 ): IFileService => {
   const gateway_client = createHTTPClient();
 
   return {
-    get_root_folder: () => {
+    getRootFolder: () => {
       gateway_client
         .get(`${backend_url}/api/v1/folder?user_id=1`)
-        .catch((err: Error) => handle_error(err));
+        .catch((err: Error) => handleError(err));
     },
-    create_file: (data: {
+    createFile: (data: {
       file_name: string;
       folder_id: number;
       size_bytes: number;
@@ -40,9 +44,9 @@ const FileService = (
     }) => {
       gateway_client
         .post(`${backend_url}/api/v1/files/upload`, {}, data)
-        .catch((err: Error) => handle_error(err));
+        .catch((err: Error) => handleError(err));
     },
-    get_file: (id: FileId) => {
+    getFile: (id: FileId) => {
       return gateway_client
         .get<FileMetadataBody>(`${backend_url}/api/v1/files?file_id=${id}`)
         .then(({ created_at, modified_at, ...rest }) => ({
@@ -51,7 +55,21 @@ const FileService = (
           modified_at: new Date(modified_at),
         }))
         .catch((err: Error) => {
-          handle_error(err);
+          handleError(err);
+          return null;
+        });
+    },
+    getFolder: (id: FolderId) => {
+      return gateway_client
+        .get<FolderMetadataBody>(
+          `${backend_url}/api/v1/files/folder?folder_id=${id}`,
+        )
+        .then(({ created_at, ...rest }) => ({
+          ...rest,
+          created_at: new Date(created_at),
+        }))
+        .catch((err) => {
+          handleError(err);
           return null;
         });
     },

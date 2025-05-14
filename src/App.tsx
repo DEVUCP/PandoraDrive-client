@@ -6,6 +6,7 @@ import UserDataService from "./Services/UserDataService";
 import LoginPage from "./Pages/LoginPage";
 import { ipContext } from "./Contexts/ipContext";
 import { portContext } from "./Contexts/portContext";
+import { FSProvider } from "./Contexts/FSContext";
 
 function App() {
   const [port, setPort] = useState<string>("55551");
@@ -19,7 +20,9 @@ function App() {
       return <Route path="*" element={<LoginPage />} />;
     return (
       <>
-        <Route index element={<DrivePage />} />
+        <FSProvider>
+          <Route index element={<DrivePage />} />
+        </FSProvider>
       </>
     );
   };
