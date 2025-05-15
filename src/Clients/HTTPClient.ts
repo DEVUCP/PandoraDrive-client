@@ -47,9 +47,15 @@ export const createHTTPClient = (
 
     const headers: RequestHeaders = {
       ...finalConfig.headers,
-      "Content-Type":
-        finalConfig.headers?.["Content-Type"] || "application/json",
     };
+    if (
+      !(finalConfig.body instanceof FormData) &&
+      !(finalConfig.body instanceof URLSearchParams) &&
+      !headers["Content-Type"]
+    ) {
+      headers["Content-Type"] = "application/json";
+    }
+
     const requestOptions: RequestInit = {
       method: finalConfig.method || "GET",
       headers,
@@ -58,10 +64,10 @@ export const createHTTPClient = (
 
     // Handle body
     if (finalConfig.body) {
-      if (
-        finalConfig.body instanceof FormData ||
-        finalConfig.body instanceof URLSearchParams
-      ) {
+      if (finalConfig.body instanceof FormData) {
+        requestOptions.body = finalConfig.body;
+        if (headers["Content-Type"]) delete headers["Content-Type"];
+      } else if (finalConfig.body instanceof URLSearchParams) {
         requestOptions.body = finalConfig.body;
       } else {
         requestOptions.body = JSON.stringify(finalConfig.body);
