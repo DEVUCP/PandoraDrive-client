@@ -11,7 +11,7 @@ import type {
 
 type MimeType = `${string}/${string}`;
 
-export type IFileService = {
+export interface IFileMetadataService {
   getRootFolder: () => Promise<FolderMetadata | null>;
   createFile: (data: {
     file_name: string;
@@ -23,12 +23,12 @@ export type IFileService = {
   getFolder: (folder_id: FolderId) => Promise<FolderMetadata | null>;
   getSubFolders: (folder_id: FolderId) => Promise<FolderMetadata[] | null>;
   getSubFiles: (folder_id: FolderId) => Promise<FileMetadata[] | null>;
-};
+}
 
-const FileService = (
+const FileMetadataService = (
   backend_url: string,
   handleError: (err: Error) => void,
-): IFileService => {
+): IFileMetadataService => {
   const gateway_client = createHTTPClient(
     [
       (data) => {
@@ -129,4 +129,4 @@ const FileService = (
     },
   };
 };
-export default FileService;
+export default FileMetadataService;

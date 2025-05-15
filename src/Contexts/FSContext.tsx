@@ -1,11 +1,14 @@
 import { createContext, useContext, useState, useRef, useEffect } from "react";
 import type { FileId, FileMetadata, FolderId, FolderMetadata } from "../types";
-import FileService from "../Services/FileService";
-import { type IFileService } from "../Services/FileService";
+import FileMetadataService from "../Services/FileMetadataService";
+import { type IFileMetadataService } from "../Services/FileMetadataService";
 import { ServiceLocatorContext } from "./ServiceLocatorContext";
 import { AuthContext } from "./AuthContext";
 import { type RequestError } from "../Clients/HTTPClient";
 import Status from "../Enums/Status";
+import FileUploadService, {
+  type IFileUploadService,
+} from "../Services/FileUploadService";
 
 /**
  * This context goal is to cache results from backend to reduce calls to backend
@@ -17,6 +20,11 @@ interface IFSContext {
   getRootFolder: () => Promise<FolderMetadata>;
   getSubFolders: (id: FolderId) => Promise<FolderMetadata[]>;
   getSubFiles: (id: FolderId) => Promise<FileMetadata[]>;
+
+  uploadFile: (
+    file: File,
+    target_folder_id: FolderId,
+  ) => Promise<FileMetadata | null>;
 }
 
 export const FSContext = createContext<IFSContext | null>(null);
@@ -33,18 +41,21 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
   const { url } = useContext(ServiceLocatorContext)!;
   const { setIsAuthenticated } = useContext(AuthContext)!;
 
-  const file_service = useRef<IFileService | null>(null);
+  const file_service = useRef<IFileMetadataService | null>(null);
+  const upload_service = useRef<IFileUploadService | null>(null);
 
   useEffect(() => {
-    file_service.current = FileService(url, (err: RequestError) => {
+    file_service.current = FileMetadataService(url, (err: RequestError) => {
       console.error("FileService error:", err);
       let final_err: RequestError = err;
       if (final_err.response?.status == Status.FORBIDDEN)
         setIsAuthenticated(false);
     });
+    upload_service.current = FileUploadService(url, console.log);
 
     return () => {
       file_service.current = null;
+      upload_service.current = null;
     };
   }, [url]);
 
@@ -131,6 +142,21 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
       return data;
     });
   };
+
+  const uploadFile = (file: File, target_folder_id: FolderId) => {
+    const us = upload_service.current;
+    if (!us) throw Error("Upload service not connected");
+
+    return us.uploadFile(file, target_folder_id).then((data) => {
+      if (!data) return null;
+      setLoadedFiles((old) => {
+        const nw = new Map(old);
+        nw.set(data.file_id, data);
+        return nw;
+      });
+      return data;
+    });
+  };
   return (
     <FSContext.Provider
       value={{
@@ -139,6 +165,7 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
         getRootFolder,
         getSubFolders,
         getSubFiles,
+        uploadFile,
       }}
     >
       {children}
