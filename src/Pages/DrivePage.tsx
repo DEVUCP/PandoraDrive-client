@@ -1,7 +1,7 @@
 import FolderSection from "../Components/FolderSection";
 import FileTable from "../Components/FileTable";
 import { useContext, useEffect, useState } from "react";
-import { FSContext } from "../Contexts/FSContext";
+import { IFSCacheContext } from "../Contexts/FSCacheContext";
 import { useParams } from "react-router-dom";
 import type { FolderMetadata } from "../types";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -20,7 +20,7 @@ import {
 const DrivePage = () => {
   const [folder, setFolder] = useState<FolderMetadata | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { getRootFolder, getFolder, uploadFile } = useContext(FSContext)!;
+  const { getRootFolder, getFolder, uploadFile } = useContext(IFSCacheContext)!;
   const { folder_id } = useParams();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -61,7 +61,7 @@ const DrivePage = () => {
 
   const handleFileUpload = async () => {
     if (selectedFile && folder) {
-      await uploadFile(selectedFile, folder.folder_id);
+      const new_file = await uploadFile(selectedFile, folder.folder_id);
     }
     setFileUploadOpen(false);
     setSelectedFile(null);

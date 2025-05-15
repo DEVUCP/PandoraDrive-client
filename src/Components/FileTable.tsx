@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { FileText, Folder } from "lucide-react";
 import type { FileMetadata, FolderId } from "../types";
-import { FSContext } from "../Contexts/FSContext";
+import { IFSCacheContext } from "../Contexts/FSCacheContext";
 
 interface Params {
   parent_folder_id: FolderId;
 }
 
 const FileTable = ({ parent_folder_id }: Params) => {
-  const { getSubFiles } = useContext(FSContext)!;
+  const { getSubFiles } = useContext(IFSCacheContext)!;
   const [files, setFiles] = useState<FileMetadata[]>([]);
   useEffect(() => {
     async function effect() {

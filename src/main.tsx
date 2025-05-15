@@ -4,15 +4,15 @@ import "./index.css";
 import App from "./App.tsx";
 import { ServiceLocatorProvider } from "./Contexts/ServiceLocatorContext.tsx";
 import { AuthProvider } from "./Contexts/AuthContext.tsx";
-import { FSProvider } from "./Contexts/FSContext.tsx";
+import { FSCacheProvider } from "./Contexts/FSCacheContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ServiceLocatorProvider>
       <AuthProvider>
-        <FSProvider>
+        <FSCacheProvider>
           <App />
-        </FSProvider>
+        </FSCacheProvider>
       </AuthProvider>
     </ServiceLocatorProvider>
   </StrictMode>,

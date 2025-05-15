@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Folder } from "lucide-react";
-import { FSContext } from "../Contexts/FSContext";
+import { IFSCacheContext } from "../Contexts/FSCacheContext";
 import type { FolderId, FolderMetadata } from "../types";
 
 const folders = ["Projects", "Photos", "Music", "Archive", "Backup"];
@@ -9,7 +9,7 @@ interface Params {
   parent_folder_id: FolderId;
 }
 const FolderSection = ({ parent_folder_id }: Params) => {
-  const { getSubFolders } = useContext(FSContext);
+  const { getSubFolders } = useContext(IFSCacheContext);
   const [folders, setFolders] = useState<FolderMetadata[]>();
   useEffect(() => {
     async function effect() {

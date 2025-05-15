@@ -1,17 +1,21 @@
 import { createHTTPClient } from "../Clients/HTTPClient";
-import type { FileMetadataInsertedDTO, FileUpsertionDTO } from "../DTOS";
-import type { FileMetadata, FolderId } from "../types";
+import type {
+  FileCompletionMetadata,
+  FileMetadataInsertedDTO,
+  FileUpsertionDTO,
+} from "../DTOS";
+import type { FolderId } from "../types";
 
 export interface IFileUploadService {
   uploadFile: (
     file: File,
     target_folder_id: FolderId,
-  ) => Promise<FileMetadata | null>;
+  ) => Promise<FileCompletionMetadata | null>;
 }
 const FileUploadService = (
   backend_url: string,
   handle_error: (err: Error) => void,
-) => {
+): IFileUploadService => {
   const gateway_client = createHTTPClient();
   const gatherStats = (
     file: File,
@@ -24,10 +28,7 @@ const FileUploadService = (
       size_bytes: file.size,
     };
   };
-  const uploadFile = async (
-    file: File,
-    target_folder_id: FolderId,
-  ): Promise<FileMetadata | null> => {
+  const uploadFile = async (file: File, target_folder_id: FolderId) => {
     return gateway_client
       .post<FileMetadataInsertedDTO>(
         `${backend_url}/api/v1/files/upload`,
@@ -70,10 +71,14 @@ const FileUploadService = (
         let promises = [];
         for (let i = 0; i < totalChunks; i++) promises.push(uploadChunk(i));
 
-        Promise.all(promises).then((_) =>
-          gateway_client.post(complete_link, {}, { token }).catch(handle_error),
+        return Promise.all(promises).then((_) =>
+          gateway_client
+            .post<FileCompletionMetadata>(complete_link, {}, { token })
+            .catch((err) => {
+              handle_error(err);
+              return null;
+            }),
         );
-        return null;
       })
       .catch((err: Error) => {
         handle_error(err);
