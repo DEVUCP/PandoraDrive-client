@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Folder } from "lucide-react";
 import { FSContext } from "../Contexts/FSContext";
 import type { FolderId, FolderMetadata } from "../types";
@@ -10,10 +10,12 @@ interface Params {
 }
 const FolderSection = ({ parent_folder_id }: Params) => {
   const { getSubFolders } = useContext(FSContext);
-  const folders: FolderMetadata[] = useMemo(async () => {
-    let result = await getSubFolders(parent_folder_id);
-    console.log(result);
-    return result;
+  const [folders, setFolders] = useState<FolderMetadata[]>();
+  useEffect(() => {
+    async function effect() {
+      setFolders(await getSubFolders(parent_folder_id));
+    }
+    effect();
   }, []);
   return (
     <div className="mb-10">

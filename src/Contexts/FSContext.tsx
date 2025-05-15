@@ -16,6 +16,7 @@ interface IFSContext {
   getFolder: (id: FolderId) => Promise<FolderMetadata>;
   getRootFolder: () => Promise<FolderMetadata>;
   getSubFolders: (id: FolderId) => Promise<FolderMetadata[]>;
+  getSubFiles: (id: FolderId) => Promise<FileMetadata[]>;
 }
 
 export const FSContext = createContext<IFSContext | null>(null);
@@ -103,11 +104,28 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
     return fs.getSubFolders(id).then((data) => {
       if (!data) {
         console.log(data);
-        throw Error("Failed to get sub folder");
+        throw Error("Failed to get sub files");
       }
       setLoadedFolders((old) => {
         const nw = new Map(old);
         for (let folder of data) nw.set(id, folder);
+        return nw;
+      });
+      return data;
+    });
+  };
+  const getSubFiles = (id: FolderId) => {
+    const fs = file_service.current;
+    if (!fs) throw Error("File service not connected");
+
+    return fs.getSubFiles(id).then((data) => {
+      if (!data) {
+        console.log(data);
+        throw Error("Failed to get sub files");
+      }
+      setLoadedFiles((old) => {
+        const nw = new Map(old);
+        for (let file of data) nw.set(id, file);
         return nw;
       });
       return data;
@@ -120,6 +138,7 @@ export const FSProvider = ({ children }: { children: React.ReactNode }) => {
         getFolder,
         getRootFolder,
         getSubFolders,
+        getSubFiles,
       }}
     >
       {children}

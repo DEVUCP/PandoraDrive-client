@@ -16,9 +16,12 @@ export const ServiceLocatorProvider = ({
   children: ReactNode;
 }) => {
   const [port, setPort] = useState<string>("55551");
-  const [ip, setIp] = useState<string>("");
-  // const url = useMemo(() => `${ip}:${port}`, [ip, port]);
-  const url = useMemo(() => (ip ? `http://localhost:${port}` : ""), [ip, port]); // WARN: avoid ip for now, fix later
+  const [ip, setIp] = useState<string>("127.0.0.1"); // WARN: Set default value for now
+  // const url = useMemo(() => `http://${ip}:${port}`, [ip, port]);
+  const url = useMemo(
+    () => (ip.length !== 0 ? `http://localhost:${port}` : ""),
+    [ip, port],
+  ); // WARN: avoid ip for now, fix later
   return (
     <ServiceLocatorContext.Provider value={{ port, setPort, ip, setIp, url }}>
       {children}

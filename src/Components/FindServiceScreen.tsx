@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import { discoverBackendServer } from "../Utils/ServerFinder";
 import { ServiceLocatorContext } from "../Contexts/ServiceLocatorContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const FindServiceScreen: React.FC = () => {
-  const { ip, setIp, port, setPort } = useContext(ServiceLocatorContext);
+  const { ip, setIp, port, setPort, url } = useContext(ServiceLocatorContext)!;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<boolean>(false);
@@ -45,6 +45,8 @@ const FindServiceScreen: React.FC = () => {
     console.log("Port submitted:", port);
   };
 
+  console.log(url);
+  if (url) return <Navigate to="/drive" />;
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <TextField

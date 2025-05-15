@@ -22,6 +22,7 @@ export type IFileService = {
   getFile: (file_id: FileId) => Promise<FileMetadata | null>;
   getFolder: (folder_id: FolderId) => Promise<FolderMetadata | null>;
   getSubFolders: (folder_id: FolderId) => Promise<FolderMetadata[] | null>;
+  getSubFiles: (folder_id: FolderId) => Promise<FileMetadata[] | null>;
 };
 
 const FileService = (
@@ -42,12 +43,21 @@ const FileService = (
     ],
   );
 
-  const transformCreatedAtField = ({
+  const transformFolderMetadataBody = ({
     created_at,
     ...rest
   }: FolderMetadataBody): FolderMetadata => ({
     ...rest,
     created_at: new Date(created_at),
+  });
+  const transformFileMetadataBody = ({
+    created_at,
+    modified_at,
+    ...rest
+  }: FileMetadataBody): FileMetadata => ({
+    ...rest,
+    created_at: new Date(created_at),
+    modified_at: new Date(modified_at),
   });
 
   return {
@@ -91,7 +101,7 @@ const FileService = (
         .get<FolderMetadataBody>(
           `${backend_url}/api/v1/files/folder?folder_id=${id}`,
         )
-        .then(transformCreatedAtField)
+        .then(transformFolderMetadataBody)
         .catch((err) => {
           handleError(err);
           return null;
@@ -102,11 +112,16 @@ const FileService = (
         .get<FolderMetadataBody[]>(
           `${backend_url}/api/v1/files/folder?parent_folder_id=${id}`,
         )
-        .then((folders) => {
-          console.log(folders);
-          return folders;
-        })
-        .then((folders) => folders.map(transformCreatedAtField))
+        .then((folders) => folders.map(transformFolderMetadataBody))
+        .catch((err) => {
+          handleError(err);
+          return null;
+        });
+    },
+    getSubFiles: (id: FolderId): Promise<FileMetadata[] | null> => {
+      return gateway_client
+        .get<FileMetadataBody[]>(`${backend_url}/api/v1/files?folder_id=${id}`)
+        .then((files) => files.map(transformFileMetadataBody))
         .catch((err) => {
           handleError(err);
           return null;

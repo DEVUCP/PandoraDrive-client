@@ -36,7 +36,7 @@ const DrivePage = () => {
         ) : folder !== null ? (
           <>
             <FolderSection parent_folder_id={folder.folder_id} />
-            <FileTable />
+            <FileTable parent_folder_id={folder.folder_id} />
           </>
         ) : (
           <div className="text-red-500">
