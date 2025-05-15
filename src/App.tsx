@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import DrivePage from "./Pages/DrivePage";
-import LoginPage from "./Pages/LoginPage";
-import RegisterScreen from "./Pages/RegisterScreen";
-import ServiceRoute from "./Wrappers/ServiceRoute";
-import ProtectedRoute from "./Wrappers/ProtectedRoute";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import DrivePage from './Pages/DrivePage'
+import LoginPage from './Pages/LoginPage'
+import RegisterScreen from './Pages/RegisterScreen'
+import ChatbotPage from './Pages/ChatbotPage'
+import ServiceRoute from './Wrappers/ServiceRoute'
+import ProtectedRoute from './Wrappers/ProtectedRoute'
 
 function App() {
   return (
@@ -29,9 +30,10 @@ function App() {
           }
         />
         <Route path="/connect" element={<RegisterScreen />} />
+        <Route path="/chatbot" element={<ChatbotPage />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
