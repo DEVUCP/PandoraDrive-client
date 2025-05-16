@@ -117,21 +117,20 @@ const ChatbotPage = () => {
   )
 
   // Add these handler functions
+  // Modified handler function to open /drive in new window
   const handleOpenHtmlDialog = (htmlContent: string) => {
-    setCurrentHtmlContent(htmlContent)
+    // Open /drive in a new window
+    window.open('/drive', '_blank', 'width=800,height=600')
+
+    // Keep the original implementation commented out
+    // setCurrentHtmlContent(htmlContent);
   }
 
   const handleCloseHtmlDialog = () => {
-    setCurrentHtmlContent(null)
+    // setCurrentHtmlContent(null)
   }
 
   const gateway_client = createHTTPClient()
-
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     navigate('/login')
-  //   }
-  // }, [isAuthenticated, navigate])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -350,7 +349,7 @@ const ChatbotPage = () => {
                         textTransform: 'none',
                       }}
                     >
-                      Show Details
+                      Click here to do that
                     </Button>
                   )}
                 </Box>
@@ -435,7 +434,7 @@ const ChatbotPage = () => {
           </Box>
         </Box>
       </Paper>
-      <Dialog
+      {/* <Dialog
         open={!!currentHtmlContent}
         onClose={handleCloseHtmlDialog}
         maxWidth="md"
@@ -463,7 +462,7 @@ const ChatbotPage = () => {
         <DialogActions>
           <Button onClick={handleCloseHtmlDialog}>Close</Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Box>
   )
 }
