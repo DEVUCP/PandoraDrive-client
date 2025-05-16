@@ -25,6 +25,18 @@ function App() {
           }
         />
         <Route
+          path="/drive/:folder_id"
+          element={
+            <ServiceRoute>
+              <ProtectedRoute>
+                <DriveProvider>
+                  <DrivePage />
+                </DriveProvider>
+              </ProtectedRoute>
+            </ServiceRoute>
+          }
+        />
+        <Route
           path="/login"
           element={
             <ServiceRoute>

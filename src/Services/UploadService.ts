@@ -21,12 +21,7 @@ const UploadService = (
   backend_url: string,
   handle_error: (err: Error) => void,
 ): IUploadService => {
-  const gateway_client = createHTTPClient([
-    (data) => {
-      console.log(data);
-      return data;
-    },
-  ]);
+  const gateway_client = createHTTPClient();
   const gatherStats = (
     file: File,
     target_folder_id: FolderId,
@@ -38,12 +33,14 @@ const UploadService = (
       size_bytes: file.size,
     };
   };
+
   const uploadFile = async (file: File, target_folder_id: FolderId) => {
+    const uploadBody = gatherStats(file, target_folder_id);
     return gateway_client
       .post<FileMetadataInsertedDTO>(
         `${backend_url}/api/v1/files/upload`,
         {},
-        gatherStats(file, target_folder_id),
+        uploadBody,
       )
       .then((data) => {
         if (!data) return Promise.reject(Error("Failed to insert metadat"));

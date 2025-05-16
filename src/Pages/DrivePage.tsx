@@ -8,25 +8,25 @@ import { DriveContext } from "../Contexts/DriveContext";
 import UploadMenu from "../Components/UploadMenu";
 
 const DrivePage = () => {
-  const { setCurrentFolder, currentFolder, reloadFiles } =
-    useContext(DriveContext)!;
-  const { getRootFolder, getFolder, uploadFile } = useContext(IFSCacheContext)!;
+  const { changeCurrentDirectory, currentFolder } = useContext(DriveContext)!;
+  const { getRootFolder, getFolder } = useContext(IFSCacheContext)!;
   const [loading, setLoading] = useState<boolean>(true);
   const { folder_id } = useParams();
 
   useEffect(() => {
     async function effect() {
       if (folder_id === undefined)
-        return setCurrentFolder(await getRootFolder());
+        return changeCurrentDirectory(await getRootFolder());
       const parsedFolderId = parseInt(folder_id!);
       if (isNaN(parsedFolderId)) {
-        setCurrentFolder(null);
+        changeCurrentDirectory(null);
       } else {
-        setCurrentFolder(await getFolder(parsedFolderId));
+        let result = await getFolder(parsedFolderId);
+        changeCurrentDirectory(result);
       }
     }
     effect().then(() => setLoading(false));
-  }, [folder_id, getFolder, getRootFolder]);
+  }, [folder_id]);
 
   if (!currentFolder) return <CircularProgress />;
 
