@@ -13,8 +13,8 @@ export interface IDriveContext {
   files: FileMetadata[];
   folders: FolderMetadata[];
   reloadFiles: () => void;
-  reloadFolders: (folder: FolderMetadata) => void;
-  setCurrentFolder: (folder: FolderMetadata | null) => void;
+  reloadFolders: () => void;
+  changeCurrentDirectory: (folder: FolderMetadata | null) => void;
 }
 
 export const DriveContext = createContext<IDriveContext | null>(null);
@@ -43,6 +43,12 @@ export const DriveProvider = ({ children }: { children: ReactNode }) => {
       await Promise.all([reloadFiles(), reloadFolders()]);
     effect();
   }, [currentFolder]);
+
+  const changeCurrentDirectory = (folder: FolderMetadata | null) => {
+    setCurrentFolder(folder);
+    reloadFiles();
+    reloadFolders();
+  };
   return (
     <DriveContext.Provider
       value={{
@@ -51,7 +57,7 @@ export const DriveProvider = ({ children }: { children: ReactNode }) => {
         currentFolder,
         reloadFiles,
         reloadFolders,
-        setCurrentFolder,
+        changeCurrentDirectory,
       }}
     >
       {children}

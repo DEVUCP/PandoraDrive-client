@@ -103,6 +103,7 @@ export const createHTTPClient = (
     } catch (error) {
       const requestError: RequestError =
         error instanceof Error ? error : new Error("Unknown error");
+
       return applyInterceptors(
         responseInterceptors,
         requestError,

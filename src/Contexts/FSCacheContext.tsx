@@ -6,9 +6,7 @@ import { ServiceLocatorContext } from "./ServiceLocatorContext";
 import { AuthContext } from "./AuthContext";
 import { type RequestError } from "../Clients/HTTPClient";
 import Status from "../Enums/Status";
-import FileUploadService, {
-  type IUploadService,
-} from "../Services/UploadService";
+import UploadService, { type IUploadService } from "../Services/UploadService";
 
 /**
  * This context goal is to cache results from backend to reduce calls to backend
@@ -53,7 +51,7 @@ export const FSCacheProvider = ({
       if (final_err.response?.status == Status.FORBIDDEN)
         setIsAuthenticated(false);
     });
-    upload_service.current = FileUploadService(url, console.log);
+    upload_service.current = UploadService(url, console.log);
 
     return () => {
       file_service.current = null;

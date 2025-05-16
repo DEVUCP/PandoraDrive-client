@@ -19,7 +19,7 @@ interface Params {
 }
 export default function ({ open, onClose, parent_folder_id }: Params) {
   const { uploadFolder } = useContext(IFSCacheContext)!;
-  const { reloadFiles } = useContext(DriveContext)!;
+  const { reloadFolders } = useContext(DriveContext)!;
   const [folderName, setFolderName] = useState<string>("");
 
   const handleFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +33,7 @@ export default function ({ open, onClose, parent_folder_id }: Params) {
     }
 
     await uploadFolder(folderName, parent_folder_id);
-    reloadFiles();
+    reloadFolders();
     handleCancel();
   };
 
