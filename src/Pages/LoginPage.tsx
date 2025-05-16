@@ -1,56 +1,59 @@
-import { useState, useContext, useEffect } from "react";
-import { TextField, Button, Box, Typography } from "@mui/material";
-import UserLoginService from "../Services/UserLoginService";
-import { AuthContext } from "../Contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { ServiceLocatorContext } from "../Contexts/ServiceLocatorContext";
+import { useState, useContext, useEffect } from 'react'
+import { TextField, Button, Box, Typography } from '@mui/material'
+import UserLoginService from '../Services/UserLoginService'
+import { AuthContext } from '../Contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { ServiceLocatorContext } from '../Contexts/ServiceLocatorContext'
 
 const LoginForm: React.FC = () => {
-  const { url } = useContext(ServiceLocatorContext);
-  const { setIsAuthenticated, isAuthenticated } = useContext(AuthContext)!;
+  const { url } = useContext(ServiceLocatorContext)
+  const { setIsAuthenticated, isAuthenticated } = useContext(AuthContext)!
 
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [error, setError] = useState<string | null>(null)
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const userService = UserLoginService(
     url,
     () => setIsAuthenticated(true),
     (err) => {
-      console.log(err);
-    },
-  );
+      console.log(err)
+    }
+  )
+
+  const searchParams = new URLSearchParams(location.search)
+  const redirectPath = searchParams.get('redirect') || '/drive'
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/drive");
-  }, [isAuthenticated]);
+    if (isAuthenticated) navigate(redirectPath)
+  }, [isAuthenticated])
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
     if (username && password) {
-      await userService.login({ username, password });
+      await userService.login({ username, password })
     } else {
-      setError("Both fields are required.");
+      setError('Both fields are required.')
     }
-  };
+  }
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
       }}
     >
       <Typography variant="h5" gutterBottom>
         Login
       </Typography>
-      <form onSubmit={handleSubmit} style={{ width: "300px" }}>
+      <form onSubmit={handleSubmit} style={{ width: '300px' }}>
         <TextField
           label="Username"
           variant="outlined"
@@ -89,7 +92,7 @@ const LoginForm: React.FC = () => {
         </Button>
       </form>
     </Box>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm

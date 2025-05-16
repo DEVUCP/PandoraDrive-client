@@ -30,7 +30,16 @@ function App() {
           }
         />
         <Route path="/connect" element={<RegisterScreen />} />
-        <Route path="/chatbot" element={<ChatbotPage />} />
+        <Route
+          path="/chatbot"
+          element={
+            <ServiceRoute>
+              <ProtectedRoute>
+                <ChatbotPage />
+              </ProtectedRoute>
+            </ServiceRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
