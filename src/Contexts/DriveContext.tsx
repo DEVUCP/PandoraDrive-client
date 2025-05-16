@@ -20,7 +20,7 @@ export interface IDriveContext {
 export const DriveContext = createContext<IDriveContext | null>(null);
 
 export const DriveProvider = ({ children }: { children: ReactNode }) => {
-  const { getSubFiles } = useContext(IFSCacheContext)!;
+  const { getSubFiles, getSubFolders } = useContext(IFSCacheContext)!;
   const [currentFolder, setCurrentFolder] = useState<FolderMetadata | null>(
     null,
   );
@@ -34,7 +34,7 @@ export const DriveProvider = ({ children }: { children: ReactNode }) => {
   };
   const reloadFolders = async () => {
     if (currentFolder) {
-      // setFiles(await getSubFolders(currentFolder.folder_id));
+      setFolders(await getSubFolders(currentFolder.folder_id));
     }
   };
 
