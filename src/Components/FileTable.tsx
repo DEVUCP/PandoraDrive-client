@@ -1,21 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { FileText, Folder } from "lucide-react";
-import type { FileMetadata, FolderId } from "../types";
-import { IFSCacheContext } from "../Contexts/FSCacheContext";
+import { DriveContext } from "../Contexts/DriveContext";
 
-interface Params {
-  parent_folder_id: FolderId;
-}
-
-const FileTable = ({ parent_folder_id }: Params) => {
-  const { getSubFiles } = useContext(IFSCacheContext)!;
-  const [files, setFiles] = useState<FileMetadata[]>([]);
-  useEffect(() => {
-    async function effect() {
-      setFiles(await getSubFiles(parent_folder_id));
-    }
-    effect();
-  }, []);
+const FileTable = () => {
+  const { files } = useContext(DriveContext)!;
   return (
     <div className="mt-6">
       <h2 className="text-xl text-left font-bold mb-4">Files</h2>

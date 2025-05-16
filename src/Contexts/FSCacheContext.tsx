@@ -7,8 +7,8 @@ import { AuthContext } from "./AuthContext";
 import { type RequestError } from "../Clients/HTTPClient";
 import Status from "../Enums/Status";
 import FileUploadService, {
-  type IFileUploadService,
-} from "../Services/FileUploadService";
+  type IUploadService,
+} from "../Services/UploadService";
 
 /**
  * This context goal is to cache results from backend to reduce calls to backend
@@ -21,10 +21,8 @@ interface IFSCacheContext {
   getSubFolders: (id: FolderId) => Promise<FolderMetadata[]>;
   getSubFiles: (id: FolderId) => Promise<FileMetadata[]>;
 
-  uploadFile: (
-    file: File,
-    target_folder_id: FolderId,
-  ) => Promise<FileMetadata | null>;
+  uploadFile: (file: File, target_folder_id: FolderId) => Promise<null>;
+  uploadFolder: (folder: string, target_folder_id: FolderId) => Promise<null>;
 }
 
 export const IFSCacheContext = createContext<IFSCacheContext | null>(null);
@@ -46,7 +44,7 @@ export const FSCacheProvider = ({
   const { setIsAuthenticated } = useContext(AuthContext)!;
 
   const file_service = useRef<IFileMetadataService | null>(null);
-  const upload_service = useRef<IFileUploadService | null>(null);
+  const upload_service = useRef<IUploadService | null>(null);
 
   useEffect(() => {
     file_service.current = FileMetadataService(url, (err: RequestError) => {
@@ -151,10 +149,15 @@ export const FSCacheProvider = ({
     const us = upload_service.current;
     if (!us) throw Error("Upload service not connected");
 
-    return us.uploadFile(file, target_folder_id).then((body) => {
-      if (!body) return null;
-      return getFile(body.file_id);
-    });
+    return us.uploadFile(file, target_folder_id).then((_) => null);
+  };
+  const uploadFolder = (
+    folder: string,
+    target_folder_id: FolderId,
+  ): Promise<null> => {
+    const us = upload_service.current;
+    if (!us) throw Error("Upload service not connected");
+    return us.uploadFolder(folder, target_folder_id).then((_) => null);
   };
   return (
     <IFSCacheContext.Provider
@@ -165,6 +168,7 @@ export const FSCacheProvider = ({
         getSubFolders,
         getSubFiles,
         uploadFile,
+        uploadFolder,
       }}
     >
       {children}

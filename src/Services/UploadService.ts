@@ -3,20 +3,30 @@ import type {
   FileCompletionMetadata,
   FileMetadataInsertedDTO,
   FileUpsertionDTO,
+  FolderCompletionMetadata,
 } from "../DTOS";
 import type { FolderId } from "../types";
 
-export interface IFileUploadService {
+export interface IUploadService {
   uploadFile: (
     file: File,
     target_folder_id: FolderId,
   ) => Promise<FileCompletionMetadata | null>;
+  uploadFolder: (
+    folder_name: string,
+    target_folder_id: FolderId,
+  ) => Promise<FolderCompletionMetadata | null>;
 }
-const FileUploadService = (
+const UploadService = (
   backend_url: string,
   handle_error: (err: Error) => void,
-): IFileUploadService => {
-  const gateway_client = createHTTPClient();
+): IUploadService => {
+  const gateway_client = createHTTPClient([
+    (data) => {
+      console.log(data);
+      return data;
+    },
+  ]);
   const gatherStats = (
     file: File,
     target_folder_id: FolderId,
@@ -86,8 +96,24 @@ const FileUploadService = (
       });
   };
 
+  const uploadFolder = (
+    folder_name: string,
+    target_folder_id: FolderId,
+  ): Promise<FolderCompletionMetadata | null> =>
+    gateway_client
+      .post<FolderCompletionMetadata>(
+        `${backend_url}/api/v1/files/folder/upload`,
+        {},
+        { folder_name, parent_folder_id: target_folder_id },
+      )
+      .catch((err) => {
+        handle_error(err);
+        return null;
+      });
+
   return {
     uploadFile,
+    uploadFolder,
   };
 };
-export default FileUploadService;
+export default UploadService;

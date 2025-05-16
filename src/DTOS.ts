@@ -17,3 +17,6 @@ export interface FileMetadataInsertedDTO {
 export interface FileCompletionMetadata {
   file_id: FileId;
 }
+export interface FolderCompletionMetadata {
+  folder_id: FileId;
+}
