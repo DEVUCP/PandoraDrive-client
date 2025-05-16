@@ -21,10 +21,7 @@ interface IFSCacheContext {
   getSubFolders: (id: FolderId) => Promise<FolderMetadata[]>;
   getSubFiles: (id: FolderId) => Promise<FileMetadata[]>;
 
-  uploadFile: (
-    file: File,
-    target_folder_id: FolderId,
-  ) => Promise<FileMetadata | null>;
+  uploadFile: (file: File, target_folder_id: FolderId) => Promise<null>;
 }
 
 export const IFSCacheContext = createContext<IFSCacheContext | null>(null);
@@ -151,10 +148,7 @@ export const FSCacheProvider = ({
     const us = upload_service.current;
     if (!us) throw Error("Upload service not connected");
 
-    return us.uploadFile(file, target_folder_id).then((body) => {
-      if (!body) return null;
-      return getFile(body.file_id);
-    });
+    return us.uploadFile(file, target_folder_id).then((_) => null);
   };
   return (
     <IFSCacheContext.Provider

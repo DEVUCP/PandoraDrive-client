@@ -3,7 +3,6 @@ import FileTable from "../Components/FileTable";
 import { useContext, useEffect, useState } from "react";
 import { IFSCacheContext } from "../Contexts/FSCacheContext";
 import { useParams } from "react-router-dom";
-import type { FolderMetadata } from "../types";
 import CircularProgress from "@mui/material/CircularProgress";
 import Fab from "@mui/material/Fab";
 import Menu from "@mui/material/Menu";
@@ -16,11 +15,13 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
+import { DriveContext } from "../Contexts/DriveContext";
 
 const DrivePage = () => {
-  const [folder, setFolder] = useState<FolderMetadata | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { setCurrentFolder, currentFolder, reloadFiles } =
+    useContext(DriveContext)!;
   const { getRootFolder, getFolder, uploadFile } = useContext(IFSCacheContext)!;
+  const [loading, setLoading] = useState<boolean>(true);
   const { folder_id } = useParams();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -30,12 +31,13 @@ const DrivePage = () => {
 
   useEffect(() => {
     async function effect() {
-      if (folder_id === undefined) return setFolder(await getRootFolder());
+      if (folder_id === undefined)
+        return setCurrentFolder(await getRootFolder());
       const parsedFolderId = parseInt(folder_id!);
       if (isNaN(parsedFolderId)) {
-        setFolder(null);
+        setCurrentFolder(null);
       } else {
-        setFolder(await getFolder(parsedFolderId));
+        setCurrentFolder(await getFolder(parsedFolderId));
       }
     }
     effect().then(() => setLoading(false));
@@ -60,9 +62,11 @@ const DrivePage = () => {
   };
 
   const handleFileUpload = async () => {
-    if (selectedFile && folder) {
-      const new_file = await uploadFile(selectedFile, folder.folder_id);
+    if (selectedFile && currentFolder) {
+      await uploadFile(selectedFile, currentFolder.folder_id);
+      reloadFiles();
     }
+
     setFileUploadOpen(false);
     setSelectedFile(null);
   };
@@ -72,15 +76,17 @@ const DrivePage = () => {
     setSelectedFile(null);
   };
 
+  if (!currentFolder) return <CircularProgress />;
+
   return (
     <div className="max-w-screen-xl mx-auto p-8 text-center">
       <div className="flex-1 p-4">
         {loading ? (
           <CircularProgress />
-        ) : folder !== null ? (
+        ) : currentFolder !== null ? (
           <>
-            <FolderSection parent_folder_id={folder.folder_id} />
-            <FileTable parent_folder_id={folder.folder_id} />
+            <FolderSection />
+            <FileTable />
           </>
         ) : (
           <div className="text-red-500">
